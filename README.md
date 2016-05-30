@@ -4,7 +4,7 @@ The Containerize app was built to assist in administrating a Docker Cluster.
 
 Once connected to a cluster, the user can view the last state of the cluster in terms of running machines, installed images, configured volumes, and system information. The data can also be refreshed using a small refresh button in the corner.
 
-The Docker Server instance must be configured to work with HTTP to work with this out of the box. HTTPS is not supported as Docker requires signed SSL certificates for authentication on the client as well, and that would complexify the user experience. That said, the Docker daemons endpoint should be secured to prevent unauthorized access through the use of a VPN or similar.
+The Docker Server instance must be configured to work with HTTP to work with this out of the box. HTTPS is not supported as Docker requires signed SSL certificates for authentication on the client as well, and that would complexify the user experience. That said, the Docker daemons endpoint should be secured through the use of a VPN or similar to prevent unauthorized access.
 
 ### Install
 To install Docker, follow the link at 
