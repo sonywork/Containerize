@@ -10,7 +10,7 @@ import Foundation
 
 extension DockerAPIClient {
     struct Constants {
-        static let Protocol = "https"
+        static let Protocol = "http"
     }
     
     struct ServerPaths {
