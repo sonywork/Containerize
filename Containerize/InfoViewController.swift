@@ -35,8 +35,8 @@ class InfoViewController: UITableViewController {
     }
     
     @IBAction func refresh(sender: AnyObject) {
+        self.refresh.hidden = false
         DockerClient.sharedInstance().reloadData({ (conf, error) in
-            self.refresh.hidden = false
             if error == nil {
                 self.reload()
             } else {
@@ -48,5 +48,4 @@ class InfoViewController: UITableViewController {
             }
             self.refresh.hidden = true
         })
-    }
-}
+    }}

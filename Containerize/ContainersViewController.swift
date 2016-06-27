@@ -51,8 +51,8 @@ class ContainersViewController: UITableViewController {
     }
     
     @IBAction func refresh(sender: AnyObject) {
+        self.refresh.hidden = false
         DockerClient.sharedInstance().reloadData({ (conf, error) in
-            self.refresh.hidden = false
             if error == nil {
                 self.table.reloadData()
             } else {
@@ -65,7 +65,6 @@ class ContainersViewController: UITableViewController {
             self.refresh.hidden = true
         })
     }
-    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         selectedContainer = DockerClient.sharedInstance().containers![indexPath.row]
         

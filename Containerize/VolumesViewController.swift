@@ -34,8 +34,8 @@ class VolumesViewController: UITableViewController {
     }
     
     @IBAction func refresh(sender: AnyObject) {
+        self.refresh.hidden = false
         DockerClient.sharedInstance().reloadData({ (conf, error) in
-            self.refresh.hidden = false
             if error == nil {
                 self.table.reloadData()
             } else {
@@ -47,6 +47,5 @@ class VolumesViewController: UITableViewController {
             }
             self.refresh.hidden = true
         })
-
     }
 }
