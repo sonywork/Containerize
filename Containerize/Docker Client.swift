@@ -148,7 +148,7 @@ extension DockerClient {
             do {
                 var fetchRequest = NSFetchRequest()
                 fetchRequest.entity = NSEntityDescription.entityForName("Info", inManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext)
-               // self.info = try (CoreDataStack.sharedInstance().managedObjectContext.executeFetchRequest(fetchRequest) as NSArray)[0] as? Info
+                self.info = try (CoreDataStack.sharedInstance().managedObjectContext.executeFetchRequest(fetchRequest) as NSArray)[0] as? Info
                 
                 fetchRequest = NSFetchRequest()
                 fetchRequest.entity = NSEntityDescription.entityForName("Container", inManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext)
