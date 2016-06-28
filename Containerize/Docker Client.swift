@@ -41,22 +41,23 @@ extension DockerClient {
         DockerAPIClient.sharedInstance().getInfo(self.addr) { (result, error) in
             if(error == nil){
                 CoreDataStack.sharedInstance().managedObjectContext.performBlock {
-                    self.clearEntities("Info")
                     self.info = nil
                     
-                    let entityDescription = NSEntityDescription.entityForName("Info", inManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext)
-                    self.info = NSManagedObject(entity: entityDescription!, insertIntoManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext) as? Info
-                    
-                    self.info!.setValue(result?[DockerAPIClient.ServerInfo.Name] as? String, forKey: "name")
-                    self.info!.setValue(result?[DockerAPIClient.ServerInfo.OperatingSystem] as? String, forKey: "os")
-                    self.info!.setValue(result?[DockerAPIClient.ServerInfo.MemTotal] as? NSNumber, forKey: "memTotal")
-                    self.info!.setValue(result?[DockerAPIClient.ServerInfo.NCPU] as? NSNumber, forKey: "nCPU")
-                    self.info!.setValue(result?[DockerAPIClient.ServerInfo.DockerRootDir] as? String, forKey: "root")
-                    self.info!.setValue(result?[DockerAPIClient.ServerInfo.ServerVersion] as? String, forKey: "version")
-                    
-                    CoreDataStack.sharedInstance().saveContext()
-                    
-                    handler(conf: 1, error: nil)
+                    self.clearEntities("Info", handler: {
+                        let entityDescription = NSEntityDescription.entityForName("Info", inManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext)
+                        self.info = NSManagedObject(entity: entityDescription!, insertIntoManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext) as? Info
+                        
+                        self.info!.setValue(result?[DockerAPIClient.ServerInfo.Name] as? String, forKey: "name")
+                        self.info!.setValue(result?[DockerAPIClient.ServerInfo.OperatingSystem] as? String, forKey: "os")
+                        self.info!.setValue(result?[DockerAPIClient.ServerInfo.MemTotal] as? NSNumber, forKey: "memTotal")
+                        self.info!.setValue(result?[DockerAPIClient.ServerInfo.NCPU] as? NSNumber, forKey: "nCPU")
+                        self.info!.setValue(result?[DockerAPIClient.ServerInfo.DockerRootDir] as? String, forKey: "root")
+                        self.info!.setValue(result?[DockerAPIClient.ServerInfo.ServerVersion] as? String, forKey: "version")
+                        
+                        CoreDataStack.sharedInstance().saveContext()
+                        
+                        handler(conf: 1, error: nil)
+                    })
                 }
             } else {
                 handler(conf: nil, error: error)
@@ -65,24 +66,25 @@ extension DockerClient {
         DockerAPIClient.sharedInstance().getContainers(self.addr) { (result, error) in
             if(error == nil){
                 CoreDataStack.sharedInstance().managedObjectContext.performBlock {
-                    self.clearEntities("Container")
-                    self.containers = []
-                    
                     let entityDescription = NSEntityDescription.entityForName("Container", inManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext)
                     if(result != nil && !(result is NSNull)){
-                        for container in result as! NSArray{
-                            let cont = NSManagedObject(entity: entityDescription!, insertIntoManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext) as? Container
-                            
-                            cont?.setValue(container[DockerAPIClient.ContainerInfo.Names]??[0], forKey: "name")
-                            cont?.setValue(container[DockerAPIClient.ContainerInfo.Id]!, forKey: "id")
-                            cont?.setValue(container[DockerAPIClient.ContainerInfo.Image]!, forKey: "image")
-                            cont?.setValue(container[DockerAPIClient.ContainerInfo.State]!, forKey: "state")
-                            
-                            CoreDataStack.sharedInstance().saveContext()
-                            
-                            self.containers?.append(cont!)
-                        }
-                        handler(conf: nil, error: nil)
+                        self.containers = []
+                        
+                        self.clearEntities("Container", handler: {
+                            for container in result as! NSArray{
+                                let cont = NSManagedObject(entity: entityDescription!, insertIntoManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext) as? Container
+                                
+                                cont?.setValue(container[DockerAPIClient.ContainerInfo.Names]??[0], forKey: "name")
+                                cont?.setValue(container[DockerAPIClient.ContainerInfo.Id]!, forKey: "id")
+                                cont?.setValue(container[DockerAPIClient.ContainerInfo.Image]!, forKey: "image")
+                                cont?.setValue(container[DockerAPIClient.ContainerInfo.State]!, forKey: "state")
+                                
+                                CoreDataStack.sharedInstance().saveContext()
+                                
+                                self.containers?.append(cont!)
+                            }
+                            handler(conf: nil, error: nil)
+                        })
                     }
                 }
             } else {
@@ -92,22 +94,24 @@ extension DockerClient {
         DockerAPIClient.sharedInstance().getImages(self.addr) { (result, error) in
             if(error == nil){
                 CoreDataStack.sharedInstance().managedObjectContext.performBlock {
-                    self.clearEntities("Image")
-                    self.images = []
-                    
                     let entityDescription = NSEntityDescription.entityForName("Image", inManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext)
                     if(result != nil && !(result is NSNull)){
-                        for image in result as! NSArray{
-                            let img = NSManagedObject(entity: entityDescription!, insertIntoManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext) as? Image
-                            
-                            img?.setValue(image[DockerAPIClient.ImageInfo.Name]!![0], forKey: "name")
-                            
-                            CoreDataStack.sharedInstance().saveContext()
-                            
-                            self.images?.append(img!)
-                        }
-                        handler(conf: nil, error: nil)
+                        self.images = []
+                        
+                        self.clearEntities("Image", handler: {
+                            for image in result as! NSArray{
+                                let img = NSManagedObject(entity: entityDescription!, insertIntoManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext) as? Image
+                                
+                                img?.setValue(image[DockerAPIClient.ImageInfo.Name]!![0], forKey: "name")
+                                
+                                CoreDataStack.sharedInstance().saveContext()
+                                
+                                self.images?.append(img!)
+                            }
+                            handler(conf: nil, error: nil)
+                        })
                     }
+                    
                 }
             } else {
                 handler(conf: nil, error: error)
@@ -116,21 +120,21 @@ extension DockerClient {
         DockerAPIClient.sharedInstance().getVolumes(self.addr) { (result, error) in
             if(error == nil){
                 CoreDataStack.sharedInstance().managedObjectContext.performBlock {
-                    self.clearEntities("Volume")
-                    self.volumes = []
-                    
                     let entityDescription = NSEntityDescription.entityForName("Volume", inManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext)
                     if(result != nil && !(result is NSNull)){
-                        for volume in result as! NSArray{
-                            let vol = NSManagedObject(entity: entityDescription!, insertIntoManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext) as? Volume
-                            
-                            vol?.setValue(volume[DockerAPIClient.VolumeInfo.Name]!, forKey: "name")
-                            
-                            CoreDataStack.sharedInstance().saveContext()
-                            
-                            self.volumes?.append(vol!)
-                        }
-                        handler(conf: nil, error: nil)
+                        self.volumes = []
+
+                        self.clearEntities("Volume", handler: {
+                            for volume in result as! NSArray{
+                                let vol = NSManagedObject(entity: entityDescription!, insertIntoManagedObjectContext: CoreDataStack.sharedInstance().managedObjectContext) as? Volume
+                                
+                                vol?.setValue(volume[DockerAPIClient.VolumeInfo.Name]!, forKey: "name")
+                                CoreDataStack.sharedInstance().saveContext()
+                                
+                                self.volumes?.append(vol!)
+                            }
+                            handler(conf: nil, error: nil)
+                        })
                     }
                 }
             } else {
@@ -165,12 +169,16 @@ extension DockerClient {
         }
     }
     
-    func clearEntities(entity: String){
+    func clearEntities(entity: String, handler: () -> Void){
         CoreDataStack.sharedInstance().managedObjectContext.performBlock {
             let fetchRequest = NSFetchRequest(entityName: entity)
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             
             do {
+                defer {
+                    handler()
+                }
+                
                 try CoreDataStack.sharedInstance().managedObjectContext.executeRequest(deleteRequest)
             } catch let error as NSError {
                 print(error)
