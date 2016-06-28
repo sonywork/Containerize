@@ -14,6 +14,8 @@ To configure the Docker Daemon, add
 `-H tcp://0.0.0.0:2376`
 to the list of runtime arguments for the Docker daemon.
 
+Ex. `docker run -H tcp://0.0.0.0:2376`
+
 This lets Docker communicate with the iOS app through HTTP.
 
 #### Daemonization:
