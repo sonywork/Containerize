@@ -77,4 +77,8 @@ class ContainersViewController: UITableViewController {
         let viewController = segue.destinationViewController as! ContainerInfoViewController
         viewController.container = selectedContainer
     }
+    
+    @IBAction func done(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: nil);
+    }
 }

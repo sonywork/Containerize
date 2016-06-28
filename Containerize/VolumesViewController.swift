@@ -48,4 +48,8 @@ class VolumesViewController: UITableViewController {
             self.refresh.hidden = true
         })
     }
+    
+    @IBAction func done(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: nil);
+    }
 }
